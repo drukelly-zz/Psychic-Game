@@ -18,6 +18,7 @@ document.onkeyup = (event) => {
 }
 
 // functions
+// poc function: not sure if it will behave as expected
 const determineWinner = (userScore, cpuScore) => {
   const overlay = document.createElement("div");
   const modal = document.createElement("div");
@@ -29,6 +30,9 @@ const determineWinner = (userScore, cpuScore) => {
     document.body.append(overlay);
     document.body.append(modal);
     console.log("YOU WIN!");
+    var playerWins = setTimeout(() => {
+      resetGame();
+    }, 5 * 1000);
   }
   if (cpuScore > 10) {
     const message = document.createTextNode("YOU LOSE");
@@ -36,6 +40,9 @@ const determineWinner = (userScore, cpuScore) => {
     document.body.append(overlay);
     document.body.append(modal);
     console.log("YOU LOSE");
+    var cpuWins = setTimeout(() => {
+      resetGame();
+    }, 5 * 1000);
   }
 }
 
@@ -44,28 +51,32 @@ const getRandomInt = (max) => {
 }
 
 const letterAlreadyGuessed = (letter, array) => {
-  (array.indexOf(letter[0]) !== -1 && letter[0] === selectedLetter) ? console.log("already guessed!") : console.log(`psst... "${selectedLetter}"... go on...`)
-}
-
-const isLetter = (letter, array) => {
   if (array.indexOf(letter[0]) !== -1) {
-    // not working as intended... yet
-    if (letterAlreadyGuessed(letter, guesses)) {
-      console.log('you already guessed that letter!')
-    } else {
-      guesses.push(letter);
-      console.log(`${guesses}`);
-      // console.log(guesses);
-      lettersGuessed.append(`${guesses.pop()}, `);
-    }
-    modalBegone(modal, overlay);
+    console.log('repeated entry');
   } else {
-    console.log("not a letter!");
+    if (user["chances"] === 0) {
+      user["chances"] = 9;
+    } else {
+      --user["chances"];
+    }
+    guesses.push(letter);
+    lettersGuessed.append(`${guesses[guesses.length-1]}, `);
   }
 }
 
-const isRight = (player, score) => {
-  player["score"] = ++score;
+const isLetter = (letter, array) => {
+  // check to see if keyed letter is a letter
+  if (array.indexOf(letter[0]) !== -1) {
+    // no repeated entries! push unique entries only
+    if (!letterAlreadyGuessed(letter, guesses)) {
+      console.log(guesses, user["chances"]);
+      console.log(`winning letter is => ${selectedLetter}`);
+      modalBegone(modal, overlay);
+    }
+  } else {
+    // alert(`You typed in ${event.key}. Please type in a valid letter.`);
+    console.log(`You typed in ${event.key}. Please type in a valid letter.`);
+  }
 }
 
 const modalBegone = (modal, overlay) => {
@@ -77,7 +88,7 @@ const randomLetter = (array) => {
   const length = array.length;
   return array[getRandomInt(length)];
 }
-// put selected letter into memory... ?
+// put selected letter into memory...
 let selectedLetter = randomLetter(letters);
 
 const resetGame = () => {
@@ -89,9 +100,8 @@ const resetGame = () => {
 }
 
 // TODO
-// - only push unique letters into .letterGuessed / no duplicates
 // - start a new round and get new random cpu letter
 // - tabulate score
-// - increase guess count
+// - decrease guess count
 // - reset scores and guesses count after the 9th try
 // - determine winner
