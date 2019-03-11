@@ -8,16 +8,24 @@ let guesses = [];
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 
 // selectors
-const lettersGuessed = document.getElementsByClassName("lettersGuessed")[0];
+const lettersGuessed = document.getElementsByClassName("letters-guessed")[0];
 const modal = document.getElementsByClassName("modal")[0];
 const overlay = document.getElementsByClassName("overlay")[0];
 
 // onkeyup event
 document.onkeyup = (event) => {
+  displayScores(user["score"], cpu["score"]);
   isLetter(event.key, letters);
 }
 
 // functions
+const displayScores = (userScore, cpuScore) => {
+  const userScoreBox = document.getElementsByClassName("score-user")[0];
+  const cpuScoreBox = document.getElementsByClassName("score-cpu")[0];
+  userScoreBox.innerText = user["score"];
+  cpuScoreBox.innerText = cpu["score"];
+}
+
 // poc function: not sure if it will behave as expected
 const determineWinner = (userScore, cpuScore) => {
   const overlay = document.createElement("div");
@@ -55,6 +63,11 @@ const letterAlreadyGuessed = (letter, array) => {
     console.log('repeated entry');
   } else {
     if (user["chances"] === 0) {
+      // cpu gets a point when user runs out of guesses
+      ++cpu["score"];
+      displayScores();
+      // reset amount of guesses
+      // TODO next round
       user["chances"] = 9;
     } else {
       --user["chances"];
@@ -65,14 +78,20 @@ const letterAlreadyGuessed = (letter, array) => {
 }
 
 const isLetter = (letter, array) => {
-  // check to see if keyed letter is a letter
+  // check to see if keyed letter is indeed a letter
   if (array.indexOf(letter[0]) !== -1) {
     // no repeated entries! push unique entries only
     if (!letterAlreadyGuessed(letter, guesses)) {
       console.log(guesses, user["chances"]);
-      console.log(`winning letter is => ${selectedLetter}`);
+      // if the player guesses the random/selected letter
+      if (guesses[guesses.length-1] === selectedLetter) {
+        ++user["score"];
+        displayScores();
+      }
+      // once the game starts, modals, begone!
       modalBegone(modal, overlay);
     }
+  // something else was keyed in
   } else {
     // alert(`You typed in ${event.key}. Please type in a valid letter.`);
     console.log(`You typed in ${event.key}. Please type in a valid letter.`);
@@ -99,9 +118,10 @@ const resetGame = () => {
   cpu["score"] = 0;
 }
 
+// onload
+console.log(`winning letter is => ${selectedLetter}`);
+
 // TODO
 // - start a new round and get new random cpu letter
-// - tabulate score
-// - decrease guess count
 // - reset scores and guesses count after the 9th try
 // - determine winner

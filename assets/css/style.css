@@ -17,7 +17,7 @@ p:last-child {
   margin-top: 2em;
 }
 
-.lettersGuessed {
+.letters-guessed {
   color: rgba(255, 255, 255, .75);
   font-weight: bold;
   font-size: 10rem;
@@ -26,12 +26,17 @@ p:last-child {
   text-shadow: rgba(0, 0, 0, .25) 10px 5px 5px;
 }
 
-.modal {
+.modal,
+.scoreboard {
   background-color: rgba(255, 255, 255, .75);
   border: 5px solid;
+  padding: 1em;
+  position: fixed;
+}
+
+.modal {
   left: 50%;
   padding: 1.5em 1em 1em;
-  position: fixed;
   text-align: center;
   top: 50%;
   transform: translate(-50%, -50%);
@@ -51,6 +56,19 @@ p:last-child {
   top: 0;
   width: 100%;
   z-index: 5;
+}
+
+.scoreboard {
+  bottom: 25px;
+}
+
+.scoreboard div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.scoreboard strong {
+  margin-right: 1em;
 }
 
 .uppercase {
