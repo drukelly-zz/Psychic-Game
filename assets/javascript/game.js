@@ -1,10 +1,10 @@
 // objects and variables
-const user = {
+let user = {
   "chances" : 9,
   "score" : 0
 };
-const cpu = { "score" : 0 };
-const guesses = [];
+let cpu = { "score" : 0 };
+let guesses = [];
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 
 // selectors
@@ -14,8 +14,7 @@ const overlay = document.getElementsByClassName("overlay")[0];
 
 // onkeyup event
 document.onkeyup = (event) => {
-  isLetter(event.key);
-  console.log(user.score, user.chances);
+  isLetter(event.key, letters);
 }
 
 // functions
@@ -44,19 +43,29 @@ const getRandomInt = (max) => {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const incrementScore = (player) => {
-  ++player;
+const letterAlreadyGuessed = (letter, array) => {
+  (array.indexOf(letter[0]) !== -1 && letter[0] === selectedLetter) ? console.log("already guessed!") : console.log(`psst... "${selectedLetter}"... go on...`)
 }
 
-const isLetter = (letter) => {
-  if (letters.indexOf(letter[0]) !== -1) {
-    guesses.push(letter);
-    lettersGuessed.append(`${guesses.pop()}, `);
+const isLetter = (letter, array) => {
+  if (array.indexOf(letter[0]) !== -1) {
+    // not working as intended... yet
+    if (letterAlreadyGuessed(letter, guesses)) {
+      console.log('you already guessed that letter!')
+    } else {
+      guesses.push(letter);
+      console.log(`${guesses}`);
+      // console.log(guesses);
+      lettersGuessed.append(`${guesses.pop()}, `);
+    }
     modalBegone(modal, overlay);
-    // console.log(letter);
   } else {
     console.log("not a letter!");
   }
+}
+
+const isRight = (player, score) => {
+  player["score"] = ++score;
 }
 
 const modalBegone = (modal, overlay) => {
@@ -68,13 +77,21 @@ const randomLetter = (array) => {
   const length = array.length;
   return array[getRandomInt(length)];
 }
+// put selected letter into memory... ?
+let selectedLetter = randomLetter(letters);
 
-let testing = randomLetter(letters);
+const resetGame = () => {
+  user = {
+    "chances" : 9,
+    "score" : 0
+  }
+  cpu["score"] = 0;
+}
 
 // TODO
 // - only push unique letters into .letterGuessed / no duplicates
 // - start a new round and get new random cpu letter
 // - tabulate score
 // - increase guess count
-// - reset guess count after the 9th try
+// - reset scores and guesses count after the 9th try
 // - determine winner
