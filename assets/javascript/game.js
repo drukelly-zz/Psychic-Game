@@ -103,6 +103,11 @@ const modalBegone = (modal, overlay) => {
   modal.remove();
 }
 
+// TODO
+const nextRound = () => {
+  let selectedLetter = randomLetter(letters);
+}
+
 const randomLetter = (array) => {
   const length = array.length;
   return array[getRandomInt(length)];
@@ -122,6 +127,5 @@ const resetGame = () => {
 console.log(`winning letter is => ${selectedLetter}`);
 
 // TODO
-// - start a new round and get new random cpu letter
-// - reset scores and guesses count after the 9th try
+// - start a new round: reset chances and get new random cpu letter
 // - determine winner
