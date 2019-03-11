@@ -13,6 +13,13 @@ body {
   position: relative;
 }
 
+hr {
+  background-color: #000;
+  border: none;
+  height: 2px;
+  margin: .5em 0;
+}
+
 p:last-child {
   margin-top: 2em;
 }

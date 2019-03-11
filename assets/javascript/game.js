@@ -19,11 +19,17 @@ document.onkeyup = (event) => {
 }
 
 // functions
-const displayScores = (userScore, cpuScore) => {
+const clearGuessBoard = (selector) => {
+  selector.innerHTML = "";
+}
+
+const displayScores = () => {
   const userScoreBox = document.getElementsByClassName("score-user")[0];
   const cpuScoreBox = document.getElementsByClassName("score-cpu")[0];
+  const numOfGuesses = document.getElementsByClassName("num-guesses-left")[0];
   userScoreBox.innerText = user["score"];
   cpuScoreBox.innerText = cpu["score"];
+  numOfGuesses.innerText = user["chances"];
 }
 
 // poc function: not sure if it will behave as expected
@@ -65,10 +71,10 @@ const letterAlreadyGuessed = (letter, array) => {
     if (user["chances"] === 0) {
       // cpu gets a point when user runs out of guesses
       ++cpu["score"];
-      displayScores();
-      // reset amount of guesses
-      // TODO next round
       user["chances"] = 9;
+      clearGuessBoard(lettersGuessed);
+      nextRound();
+      displayScores();
     } else {
       --user["chances"];
     }
@@ -86,6 +92,8 @@ const isLetter = (letter, array) => {
       // if the player guesses the random/selected letter
       if (guesses[guesses.length-1] === selectedLetter) {
         ++user["score"];
+        clearGuessBoard(lettersGuessed);
+        nextRound();
         displayScores();
       }
       // once the game starts, modals, begone!
@@ -105,7 +113,10 @@ const modalBegone = (modal, overlay) => {
 
 // TODO
 const nextRound = () => {
+  guesses.length = 0;
   let selectedLetter = randomLetter(letters);
+  console.log(`winning letter is => ${selectedLetter}`);
+  user["chances"] = 9;
 }
 
 const randomLetter = (array) => {
