@@ -1,6 +1,6 @@
 // objects and variables
 let user = {
-  "chances" : 9,
+  "chances" : 3,
   "score" : 0
 };
 let cpu = { "score" : 0 };
@@ -19,8 +19,8 @@ document.onkeyup = (event) => {
 }
 
 // functions
-const clearGuessBoard = (selector) => {
-  selector.innerHTML = "";
+const clearGuessBoard = () => {
+  lettersGuessed.innerHTML = "";
 }
 
 const displayScores = () => {
@@ -32,77 +32,60 @@ const displayScores = () => {
   numOfGuesses.innerText = user["chances"];
 }
 
-// poc function: not sure if it will behave as expected
-const determineWinner = (userScore, cpuScore) => {
-  const overlay = document.createElement("div");
-  const modal = document.createElement("div");
-  overlay.className = "overlay";
-  modal.className = "modal";
-  if (userScore > 10) {
-    const message = document.createTextNode("YOU WIN!");
-    modal.appendChild(message);
-    document.body.append(overlay);
-    document.body.append(modal);
-    console.log("YOU WIN!");
-    var playerWins = setTimeout(() => {
-      resetGame();
-    }, 5 * 1000);
-  }
-  if (cpuScore > 10) {
-    const message = document.createTextNode("YOU LOSE");
-    modal.appendChild(message);
-    document.body.append(overlay);
-    document.body.append(modal);
-    console.log("YOU LOSE");
-    var cpuWins = setTimeout(() => {
-      resetGame();
-    }, 5 * 1000);
-  }
-}
-
+// get random integer: accepts one param that's a number
 const getRandomInt = (max) => {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const letterAlreadyGuessed = (letter, array) => {
-  if (array.indexOf(letter[0]) !== -1) {
-    console.log('repeated entry');
-  } else {
-    if (user["chances"] === 0) {
-      // cpu gets a point when user runs out of guesses
-      ++cpu["score"];
-      user["chances"] = 9;
-      clearGuessBoard(lettersGuessed);
-      nextRound();
-      displayScores();
-    } else {
-      --user["chances"];
-    }
-    guesses.push(letter);
-    lettersGuessed.append(`${guesses[guesses.length-1]}, `);
-  }
-}
-
+// is it a letter? takes two params: a string (letter) and an array (guesses)
 const isLetter = (letter, array) => {
   // check to see if keyed letter is indeed a letter
   if (array.indexOf(letter[0]) !== -1) {
     // no repeated entries! push unique entries only
-    if (!letterAlreadyGuessed(letter, guesses)) {
-      console.log(guesses, user["chances"]);
-      // if the player guesses the random/selected letter
+    if (!letterAlreadyGuessed(letter, guesses)) {      
+      // if the user guesses the letter correctly
+      // user gets 1 pt
       if (guesses[guesses.length-1] === selectedLetter) {
         ++user["score"];
-        clearGuessBoard(lettersGuessed);
-        nextRound();
         displayScores();
+        console.log("you guessed it!");
+        nextRound();
       }
-      // once the game starts, modals, begone!
-      modalBegone(modal, overlay);
+      
+      // -1 case?
+      // if (user["chances"] === -1) {
+      //   console.log("0?");
+      // }
+
+      // once user runs out of chances, it's the end of the round
+      // cpu gets 1 pt
+      // TODO
+        // start a new round
+      if (user["chances"] === 0) {
+        ++cpu["score"];
+        displayScores();
+        console.log("end of round");
+        console.log("============");
+        nextRound();
+      }
+    } else {
+      console.log("2. repeated entry");
     }
+    // game has begun!
+    modalBegone(modal, overlay);
   // something else was keyed in
   } else {
     // alert(`You typed in ${event.key}. Please type in a valid letter.`);
     console.log(`You typed in ${event.key}. Please type in a valid letter.`);
+  }
+}
+
+const letterAlreadyGuessed = (letter, array) => {
+  if (array.indexOf(letter[0]) !== -1) {
+    console.log("1. repeated entry");
+  } else {
+    guesses.push(letter);
+    lettersGuessed.innerHTML += `<span class="letter">${guesses[guesses.length-1]}</span>`;
   }
 }
 
@@ -111,12 +94,14 @@ const modalBegone = (modal, overlay) => {
   modal.remove();
 }
 
-// TODO
 const nextRound = () => {
-  guesses.length = 0;
+  user["chances"] = 3;
   let selectedLetter = randomLetter(letters);
+  displayScores();
   console.log(`winning letter is => ${selectedLetter}`);
-  user["chances"] = 9;
+  guesses.length = 0;
+  console.log(guesses);
+  clearGuessBoard();
 }
 
 const randomLetter = (array) => {
@@ -125,14 +110,6 @@ const randomLetter = (array) => {
 }
 // put selected letter into memory...
 let selectedLetter = randomLetter(letters);
-
-const resetGame = () => {
-  user = {
-    "chances" : 9,
-    "score" : 0
-  }
-  cpu["score"] = 0;
-}
 
 // onload
 console.log(`winning letter is => ${selectedLetter}`);
