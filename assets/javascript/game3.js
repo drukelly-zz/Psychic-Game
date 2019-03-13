@@ -7,8 +7,20 @@ const isLetter = (letter, array) => {
     console.log(`You typed in ${event.key}. Please type in a valid letter.`);
   }
 }
+const emptyGuesses = (selector) => {
+  selector.innerHTML = "";
+}
 const getRandomInt = (max) => {
   return Math.floor(Math.random() * Math.floor(max));
+}
+const nextRound = (player) => {
+  user["chances"] = 3;
+  console.log(`${player} won that round!`);
+  guesses.length = 0;
+  let charToGuess = new Object();
+  charToGuess = letters[getRandomInt(letters.length)];
+  console.log(`the next winning key is => ${charToGuess}`);
+  return charToGuess;
 }
 const noRepeatedEntries = (letter, array, charToGuess) => {
   if (array.indexOf(letter[0]) !== -1) {
@@ -30,7 +42,7 @@ let cpu = {
   "score" : 0
 }
 let user = {
-  "chances" : 9,
+  "chances" : 3,
   "score" : 0
 }
 // Arrays
@@ -53,17 +65,18 @@ document.addEventListener("DOMContentLoaded", () => {
   document.onkeypress = (event) => {
     let guess = event.key;
     if (isLetter(guess, letters) && noRepeatedEntries(guess, guesses, charToGuess)) {
-      let test = --user["chances"];
-      console.log(test);
+      --user["chances"];
       if (guess === charToGuess) {
-        console.log("win!");
         ++user["score"];
-    //   //   // guesses.length = 0;
+        nextRound("user");
+        emptyGuesses(lettersGuessed);
+        console.log("next round => " + charToGuess);
       }
       if (user["chances"] === 0) {
-        console.log("lose");
         ++cpu["score"];
-    //   //   // user["chances"] = 3;
+        nextRound("cpu");
+        emptyGuesses(lettersGuessed);
+        console.log("next round => " + charToGuess);
       }
       updateScores();
     }
