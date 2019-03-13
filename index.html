@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Psychic Game</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
   <link rel="stylesheet" href="assets/css/style.css">
@@ -12,32 +11,32 @@
   <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
   <link rel="manifest" href="site.webmanifest">
+  <title>Psychic Game by: John Kelly</title>
 </head>
 <body>
-  <div class="letters-guessed"></div>
+  <div class="user-guesses"></div>
   <div class="scoreboard">
-    <div>
-      <strong>Guesses Remaining</strong>
-      <span class="num-guesses-left">3</span>
+    <div class="scoreboard-header">
+      <strong>Guesses</strong>
+      <span class="guesses"></span>
     </div>
-    <hr size="1" noshade="noshade">
-    <div>
-      <strong>Player</strong>
-      <span class="score-user">0</span>
+    <div class="user-section">
+      <strong>User</strong>
+      <span class="user"></span>
     </div>
-    <div>
+    <div class="cpu-section">
       <strong>CPU</strong>
-      <span class="score-cpu">0</span>
+      <span class="cpu"></span>
     </div>
   </div>
   <div class="modal">
     <h1 class="uppercase">Psychic Game</h1>
-    <p>Try to guess the letter in less than 3 tries. If you guess correctly, you get a point! If you don't, CPU gets a point. First player to get to 10 points wins!</p>
+    <p>Try to guess the letter in less than <strong><span class="num-of-attempts"></span> tries</strong>. If you guess correctly, you get a point! If you don't, CPU gets a point. First player to get to <strong><span class="total-points"></span> points</strong> wins!</p>
     <p>
       <strong class="uppercase">[Press a letter key to start]</strong>
     </p>
   </div>
   <div class="overlay"></div>
-  <script src="assets/javascript/game2.js"></script>
+  <script src="assets/javascript/game.js"></script>
 </body>
 </html>

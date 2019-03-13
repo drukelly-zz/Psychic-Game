@@ -1,143 +1,140 @@
-// objects and variables
-let user = {
-  "chances" : 9,
+// Objects
+let cpu = {
   "score" : 0
-};
-let cpu = { "score" : 0 };
-let guesses = [];
+}
+let user = {
+  "chances" : 3,
+  "score" : 0
+}
+const totalPoints = 5;
+// Arrays
+const guesses = [];
 const letters = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+const winningLetters = [];
 
-// selectors
-const lettersGuessed = document.getElementsByClassName("letters-guessed")[0];
+// Selectors
+const remainingGuesses = document.getElementsByClassName("guesses")[0];
+const userScore = document.getElementsByClassName("user")[0];
+const cpuScore = document.getElementsByClassName("cpu")[0];
+const lettersGuessed = document.getElementsByClassName("user-guesses")[0];
 const modal = document.getElementsByClassName("modal")[0];
 const overlay = document.getElementsByClassName("overlay")[0];
+const spanNumOfAttempts = document.getElementsByClassName("num-of-attempts")[0];
+const spanTotalPoints = document.getElementsByClassName("total-points")[0];
 
-// onkeyup event
-document.onkeyup = (event) => {
-  displayScores(user["score"], cpu["score"]);
-  isLetter(event.key, letters);
+// Functions
+const displayModal = (message) => {
+  modal.classList.remove("hide");
+  overlay.classList.remove("hide");
+  modal.innerHTML = `<h1 class="uppercase">${message}</h1>`;
 }
-
-// functions
-const clearGuessBoard = (selector) => {
-  selector.innerHTML = "";
-}
-
-const displayScores = () => {
-  const userScoreBox = document.getElementsByClassName("score-user")[0];
-  const cpuScoreBox = document.getElementsByClassName("score-cpu")[0];
-  const numOfGuesses = document.getElementsByClassName("num-guesses-left")[0];
-  userScoreBox.innerText = user["score"];
-  cpuScoreBox.innerText = cpu["score"];
-  numOfGuesses.innerText = user["chances"];
-}
-
-// poc function: not sure if it will behave as expected
-const determineWinner = (userScore, cpuScore) => {
-  const overlay = document.createElement("div");
-  const modal = document.createElement("div");
-  overlay.className = "overlay";
-  modal.className = "modal";
-  if (userScore > 10) {
-    const message = document.createTextNode("YOU WIN!");
-    modal.appendChild(message);
-    document.body.append(overlay);
-    document.body.append(modal);
-    console.log("YOU WIN!");
-    var playerWins = setTimeout(() => {
-      resetGame();
-    }, 5 * 1000);
-  }
-  if (cpuScore > 10) {
-    const message = document.createTextNode("YOU LOSE");
-    modal.appendChild(message);
-    document.body.append(overlay);
-    document.body.append(modal);
-    console.log("YOU LOSE");
-    var cpuWins = setTimeout(() => {
-      resetGame();
-    }, 5 * 1000);
-  }
-}
-
-const getRandomInt = (max) => {
-  return Math.floor(Math.random() * Math.floor(max));
-}
-
-const letterAlreadyGuessed = (letter, array) => {
-  if (array.indexOf(letter[0]) !== -1) {
-    console.log('repeated entry');
-  } else {
-    if (user["chances"] === 0) {
-      // cpu gets a point when user runs out of guesses
-      ++cpu["score"];
-      user["chances"] = 9;
-      clearGuessBoard(lettersGuessed);
-      nextRound();
-      displayScores();
-    } else {
-      --user["chances"];
-    }
-    guesses.push(letter);
-    lettersGuessed.append(`${guesses[guesses.length-1]}, `);
-  }
-}
-
 const isLetter = (letter, array) => {
-  // check to see if keyed letter is indeed a letter
   if (array.indexOf(letter[0]) !== -1) {
-    // no repeated entries! push unique entries only
-    if (!letterAlreadyGuessed(letter, guesses)) {
-      console.log(guesses, user["chances"]);
-      // if the player guesses the random/selected letter
-      if (guesses[guesses.length-1] === selectedLetter) {
-        ++user["score"];
-        clearGuessBoard(lettersGuessed);
-        nextRound();
-        displayScores();
-      }
-      // once the game starts, modals, begone!
-      modalBegone(modal, overlay);
-    }
-  // something else was keyed in
+    return true;
   } else {
     // alert(`You typed in ${event.key}. Please type in a valid letter.`);
     console.log(`You typed in ${event.key}. Please type in a valid letter.`);
   }
 }
-
-const modalBegone = (modal, overlay) => {
-  overlay.remove();
-  modal.remove();
+const emptyGuesses = (selector) => {
+  let emptyTimer = setTimeout(() => {
+    selector.innerHTML = "";
+  }, 650);
 }
-
-// TODO
-const nextRound = () => {
-  guesses.length = 0;
-  let selectedLetter = randomLetter(letters);
-  console.log(`winning letter is => ${selectedLetter}`);
-  user["chances"] = 9;
+const getRandomInt = (max) => {
+  return Math.floor(Math.random() * Math.floor(max));
 }
-
-const randomLetter = (array) => {
-  const length = array.length;
-  return array[getRandomInt(length)];
+const modalBegone = () => {
+  modal.classList.add("hide");
+  overlay.classList.add("hide");
 }
-// put selected letter into memory...
-let selectedLetter = randomLetter(letters);
-
-const resetGame = () => {
-  user = {
-    "chances" : 9,
-    "score" : 0
+const nextRound = (player) => {
+  user["chances"] = 3;
+  console.log(`${player} won that round!`);
+  let nextRoundTimer = setTimeout(function() {
+    guesses.length = 0;
+  }, 500);
+}
+const noRepeatedEntries = (letter, array, charToGuess) => {
+  if (array.indexOf(letter[0]) !== -1) {
+    console.log("repeated entry");
+  } else {
+    guesses.push(letter);
+    lettersGuessed.innerHTML += `<span class="letter">${guesses[guesses.length-1]}</span>`;
+    return charToGuess;
   }
+}
+const resetGame = () => {
   cpu["score"] = 0;
+  user["score"] = 0;
+  updateScores();
+}
+const updateScores = () => {
+  remainingGuesses.innerText = user["chances"];
+  userScore.innerText = user["score"];
+  cpuScore.innerText = cpu["score"];
 }
 
+// Events
 // onload
-console.log(`winning letter is => ${selectedLetter}`);
-
-// TODO
-// - start a new round and get new random cpu letter
-// - reset scores and guesses count after the 9th try
-// - determine winner
+document.addEventListener("DOMContentLoaded", () => {
+  spanNumOfAttempts.textContent = user["chances"];
+  spanTotalPoints.textContent = totalPoints;
+  // randomize a letter
+  let charToGuess = letters[getRandomInt(letters.length)];
+  winningLetters.push(charToGuess);
+  console.log(`the winning key is => ${charToGuess}`);
+  updateScores();
+  // onkeypress
+  document.onkeypress = (event) => {
+    modalBegone();
+    let guess = event.key;
+    if (isLetter(guess, letters) && noRepeatedEntries(guess, guesses, charToGuess)) {
+      --user["chances"];
+      // user guessed it!
+      if (guess === charToGuess) {
+        lettersGuessed.lastChild.classList.add("letter-check");
+        ++user["score"];
+        nextRound("user");
+        emptyGuesses(lettersGuessed);
+        // next letter
+        charToGuess = letters[getRandomInt(letters.length)];
+        winningLetters.push(charToGuess);
+        console.log(`the next winning key is => ${winningLetters[winningLetters.length-1]}`);
+      }
+      // run out of chances
+      if (user["chances"] === 0) {
+        ++cpu["score"];
+        nextRound("cpu");
+        emptyGuesses(lettersGuessed);
+        // next letter
+        charToGuess = letters[getRandomInt(letters.length)];
+        winningLetters.push(charToGuess);
+        console.log(`the next winning key is => ${winningLetters[winningLetters.length-1]}`);
+      }
+      // user win scenario
+      if (user["score"] === totalPoints) {
+        displayModal("You Win!");
+        modal.classList.add("winner");
+        modal.classList.remove("loser");
+        setTimeout(() => {
+          resetGame();
+        }, 500);
+        clearTimeout(this.emptyTimer);
+        clearTimeout(this.nextRoundTimer);
+      }
+      // cpu win scenario
+      if (cpu["score"] === totalPoints) {
+        displayModal("You Lose");
+        modal.classList.add("loser");
+        modal.classList.remove("winner");
+        setTimeout(() => {
+          resetGame();
+        }, 500);
+        clearTimeout(this.emptyTimer);
+        clearTimeout(this.nextRoundTimer);
+      }
+      updateScores();
+    }
+  }
+});
