@@ -1,7 +1,7 @@
 # Psychic Game
 
 ## Rules
-Try to guess the letter in less than _x_ amount of tries. If you guess correctly, you get a point! If you don't, CPU gets a point. First player to get to _y_ points win!
+Try to guess the letter in less than _x_ amount of tries. If you guess correctly, you get a point! If you don't, CPU gets a point. First player to get to _y_ points wins!
 
 ## Details
 - Game will restart after guessing the letter correctly
