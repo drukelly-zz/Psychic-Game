@@ -102,7 +102,7 @@ document.addEventListener("DOMContentLoaded", () => {
         winningLetters.push(charToGuess);
         console.log(`the next winning key is => ${winningLetters[winningLetters.length-1]}`);
       }
-      // run out of chances
+      // user ran out of chances
       if (user["chances"] === 0) {
         ++cpu["score"];
         nextRound("cpu");
@@ -112,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
         winningLetters.push(charToGuess);
         console.log(`the next winning key is => ${winningLetters[winningLetters.length-1]}`);
       }
-      // user win scenario
+      // user wins scenario
       if (user["score"] === totalPoints) {
         displayModal("You Win!");
         modal.classList.add("winner");
@@ -123,7 +123,7 @@ document.addEventListener("DOMContentLoaded", () => {
         clearTimeout(this.emptyTimer);
         clearTimeout(this.nextRoundTimer);
       }
-      // cpu win scenario
+      // cpu wins scenario
       if (cpu["score"] === totalPoints) {
         displayModal("You Lose");
         modal.classList.add("loser");
